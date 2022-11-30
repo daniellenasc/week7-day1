@@ -25,10 +25,11 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       lowercase: true,
+      match: /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/,
     },
 
     role: {
-      type: Strung,
+      type: String,
       enum: ["professora", "aluno", "ta"],
       default: "aluno",
     },

@@ -3,6 +3,9 @@ import express from "express";
 //o roteador
 const userRoute = express.Router();
 
+//importar o userModel:
+import UserModel from "../model/user.model.js";
+
 //SIMULANDO UM BANCO DE DADOS:
 const bancoDados = [
   {
@@ -19,15 +22,27 @@ const bancoDados = [
 
 //GET ALL
 //dois parâmetros: 1) caminho, rota; 2) callback - recebe dois argumentos: req (request => requisições do cliente) e res (response => a resposta para o cliente)
-userRoute.get("/enap", (req, res) => {
+/* userRoute.get("/enap", (req, res) => {
   const bemVindo = "Bem vindo ao servidor da Enap turma 92 - IRONHACK";
   //retorna uma resposra com status de 200 e um JSON
   return res.status(200).json(bemVindo);
-});
+}); */
 
 //CRIAR UMA ROTA QUE RETORNA BANCO DE DADOS
-userRoute.get("/all-users", (req, res) => {
+/* userRoute.get("/all-users", (req, res) => {
   return res.status(200).json(bancoDados);
+}); */
+
+//CREATE (NOVO USUÁRIO) NO MONGODB
+//A CALLBACK É ASSÍNCRONA!!
+userRoute.post("/create-user", async (req, res) => {
+  try {
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ msg: "Algo deu errado na criação do usuário." });
+  }
 });
 
 //CREATE USER
@@ -59,6 +74,18 @@ userRoute.delete("/delete/:id", (req, res) => {
 });
 
 //PUT - EDITAR:
-//app.put("/edit/:id", (req, res) => {});
+userRoute.put("/edit/:id", (req, res) => {
+  const { id } = req.params;
+
+  const editUser = bancoDados.find((user) => user.id === id);
+  const index = bancoDados.indexOf(editUser); // 0
+
+  bancoDados[index] = {
+    ...editUser,
+    ...req.body,
+  };
+
+  return res.status(200).json(bancoDados[index]);
+});
 
 export default userRoute;

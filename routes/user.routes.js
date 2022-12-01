@@ -91,7 +91,7 @@ userRoute.post("/create-user", async (req, res) => {
 userRoute.get("/oneUser/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate("tasks");
 
     //caso o id não exista na coleção
     if (!user) {

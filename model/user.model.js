@@ -39,7 +39,7 @@ const userSchema = new Schema(
       default: true,
     },
 
-    tasks: [{ type: String }],
+    tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
 
     birth: { type: Date },
 
@@ -52,7 +52,7 @@ const userSchema = new Schema(
 );
 
 //modelo da collection:
-//.model(1º parâmetro: "nome do modelo"(nome do arquivo), 2º Parâmetro: o schema)
+//model(1º parâmetro: "nome do modelo"(nome do arquivo - primeira letra em maiúsculo e no singulat), 2º Parâmetro: o schema)
 // = exportando um modelo (.model), que tem o nome "Content" (1º parâmetro), e segue a receita do contentScheema (2º parâmetro)
 const UserModel = model("User", userSchema);
 

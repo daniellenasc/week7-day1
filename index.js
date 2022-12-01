@@ -8,8 +8,9 @@ import * as dotenv from "dotenv"; //pq a documentação manda importar dessa man
 //importando o connect
 import connect from "./config/db.config.js";
 
-//importar
+//importar as rotas:
 import userRoute from "./routes/user.routes.js";
+import taskRoute from "./routes/task.route.js";
 
 //3. habilitar o servidor a ter variáveis de ambiente
 dotenv.config();
@@ -29,6 +30,7 @@ connect();
 
 //7. CRIAR AS ROTAS NA PASTA ROUTE E IMPORTAR:
 app.use("/user", userRoute);
+app.use("/task", taskRoute);
 
 //NO FINAL DO ARQUIVO
 //6. Servirdor subindo para o ar: .listen recebe dois parâmetros: 1. porta (que está definida no .env: process.env entra no arquivo .env, e PORT é a key do arquivo), 2. callback

@@ -40,4 +40,56 @@ taskRoute.get("/oneTask/:idTask", async (req, res) => {
   }
 });
 
+//READ ALL TASKS
+taskRoute.get("/all-tasks", async (req, res) => {
+  try {
+    const allTasks = await TaskModel.find({}).populate("user");
+    return res.status(200).json(allTasks);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error.errors);
+  }
+});
+
+//READ ALL TASK
+taskRoute.put("/edit/:idTask", async (req, res) => {
+  try {
+    const { idTask } = req.params;
+    const updatedTask = await TaskModel.findOneAndUpdate(
+      { _id: idTask },
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+    return res.status(200).json(updatedTask);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error.errors);
+  }
+});
+
+//DELETE TASK
+taskRoute.delete("/delete/:idTask", async (req, res) => {
+  try {
+    const { idTask } = req.params;
+
+    //deletar a task
+    const deletedTask = await TaskModel.findOneAndDelete(idTask);
+
+    //atualizar o "tasks" do user (pelo id do user)
+    await UserModel.findByIdAndUpdate(
+      deletedTask.user,
+      {
+        $pull: {
+          tasks: idTask,
+        },
+      },
+      { new: true, runValidators: true }
+    );
+    return res.status(200).json(deletedTask);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error.errors);
+  }
+});
+
 export default taskRoute;

@@ -1,10 +1,9 @@
 import express from "express";
+import UserModel from "../model/user.model.js";
+import TaskModel from "../model/task.model.js";
 
 //o roteador
 const userRoute = express.Router();
-
-//importar o userModel:
-import UserModel from "../model/user.model.js";
 
 //SIMULANDO UM BANCO DE DADOS:
 const bancoDados = [
@@ -136,7 +135,12 @@ userRoute.delete("/delete/:id", async (req, res) => {
       return res.status(400).json({ msg: "Usuário não encontrado" });
     }
 
-    return res.status(200).json(deletedUser);
+    const users = await UserModel.find();
+
+    //deletar todas as tasks do usuário que foi deletado
+    await TaskModel.deleteMany({ user: id });
+
+    return res.status(200).json(users);
   } catch (error) {
     console.error(error);
     return res.status(500).json(error.errors);

@@ -2,6 +2,7 @@ import express from "express";
 import UserModel from "../model/user.model.js";
 import TaskModel from "../model/task.model.js";
 import bcrypt from "bcrypt";
+import generateToken from "../config/jwt.config.js";
 
 //o roteador
 const userRoute = express.Router();
@@ -43,7 +44,7 @@ userRoute.post("/sign-up", async (req, res) => {
       passwordHash: hashedPassword,
     });
 
-    //deletar a propriedade passwordHash do usuário
+    //deletar a propriedade passwordHash do usuário da resposta p/ o cliente, para que essa informação sensível não fique transitando (no banco de dados, ainda existe)
     delete newUser._doc.passwordHash;
 
     return res.status(201).json(newUser);
@@ -54,6 +55,45 @@ userRoute.post("/sign-up", async (req, res) => {
 });
 
 // ROTA LOG IN
+userRoute.post("/login", async (req, res) => {
+  try {
+    //capturando o email e o password do req.body
+    const { email, password } = req.body;
+
+    //achar o usuário no banco de dados pelo email
+    const user = await UserModel.findOne({ email: email });
+
+    //checar se o email existe no banco de dados
+    if (!user) {
+      return res.status(400).json({ msg: "Usuário não cadastrado" });
+    }
+
+    //comparar a senha que o usuário enviou com a senha hasheada que está no banco de dados
+    //bcrypt tem um método chamado compare():
+    // 1) senha que o usuário enviou
+    // 2) senha hasheada
+    if (await bcrypt.compare(password, user.passwordHash)) {
+      //se a comparação for true, cai dentro desse if, ou seja, as senhas são iguais, ou seja, tenho que devolver pro usuário um TOKEN de acesso
+
+      //apagar a senha hasheada p/ não transitar informação sensível
+      delete user._doc.passwordHash;
+
+      //criar um token para o usuário logado
+      const token = generateToken(user);
+
+      return res.status(200).json({
+        user: user,
+        token: token,
+      });
+    } else {
+      //se a comparação for FALSE, cai dentro desse else, ous seja, as senhas não são iguais
+      return res.status(401).json({ msg: "Email ou senha inválida" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
 
 //GET ALL
 //dois parâmetros: 1) caminho, rota; 2) callback - recebe dois argumentos: req (request => requisições do cliente) e res (response => a resposta para o cliente)

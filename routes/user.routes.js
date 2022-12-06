@@ -1,23 +1,59 @@
 import express from "express";
 import UserModel from "../model/user.model.js";
 import TaskModel from "../model/task.model.js";
+import bcrypt from "bcrypt";
 
 //o roteador
 const userRoute = express.Router();
 
-//SIMULANDO UM BANCO DE DADOS:
-const bancoDados = [
-  {
-    id: "718ef24c-d248-49ee-90a5-7a205ce87fb2",
-    name: "Danielle Nascimento",
-    age: 33,
-    role: "TA",
-    active: true,
-    tasks: ["fazer chamada", "liberar calendly"],
-  },
-];
-
 //7. criar as ROTAS:
+
+const saltRounds = 10; //quantidade de caracteres a serem adicionados no salt (10 é padrão)
+
+//ROTA SIGN-UP
+userRoute.post("/sign-up", async (req, res) => {
+  try {
+    //capturando a senha do req.body
+    const { password } = req.body;
+
+    // checando se a senha existe || se tem 8 caracteres, maísculos e minúsculo e caracteres especiais
+    if (
+      !password ||
+      password.match(
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#!])[0-9a-zA-Z$*&@#!]{8,}$/
+      )
+    ) {
+      return res
+        .status(400)
+        .json({ msg: "Senha não tem os requisitos mínimos de segurança" });
+    }
+
+    //pegar o salt - qdo for usar o bcrypt, usar o await
+    const salt = await bcrypt.genSalt(saltRounds); //10
+
+    //hashear senha
+    // .hash() recebe dois argumentos:
+    // 1) o que você quer hashear
+    // 2) o salt
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    //criar o usuário com a senha hasheada:
+    const newUser = await UserModel.create({
+      ...req.body,
+      passwordHash: hashedPassword,
+    });
+
+    //deletar a propriedade passwordHash do usuário
+    delete newUser._doc.passwordHash;
+
+    return res.status(201).json(newUser);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
+
+// ROTA LOG IN
 
 //GET ALL
 //dois parâmetros: 1) caminho, rota; 2) callback - recebe dois argumentos: req (request => requisições do cliente) e res (response => a resposta para o cliente)
@@ -40,7 +76,7 @@ const bancoDados = [
 userRoute.get("/all-users", async (req, res) => {
   try {
     // find vazio -> todas as ocorrencias
-    // projections -> defini os campos que vão ser retornados
+    // projections -> define os campos que vão ser retornados
     // sort() -> ordenada o retorno dos dados
     // limit() -> define quantas ocorrencias serão retornadas
     const users = await UserModel.find({}, { __v: 0, updatedAt: 0 })
@@ -69,7 +105,7 @@ userRoute.get("/all-users", async (req, res) => {
 //CREATE (NOVO USUÁRIO) NO MONGODB
 //A CALLBACK É ASSÍNCRONA!!
 //no insomnia: POST http://localhost:8080/user/create-user
-userRoute.post("/create-user", async (req, res) => {
+/* userRoute.post("/create-user", async (req, res) => {
   try {
     //tudo o que passar dentro do create vai ser o corpo do que será criado
     //UserModel é a porta de entrada para a collection User (é o mongoose)
@@ -81,7 +117,7 @@ userRoute.post("/create-user", async (req, res) => {
     console.error(error);
     return res.status(500).json(error.errors);
   }
-});
+}); */
 
 //GET ONE USER NO MONGODB
 //fundById() é um método do mongoose

@@ -30,8 +30,8 @@ const userSchema = new Schema(
 
     role: {
       type: String,
-      enum: ["professora", "aluno", "ta"],
-      default: "aluno",
+      enum: ["ADMIN", "USER"],
+      default: "USER",
     },
 
     active: {
@@ -42,6 +42,8 @@ const userSchema = new Schema(
     tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
 
     birth: { type: Date },
+
+    passwordHash: { type: String, require: true },
 
     adress: {
       city: { type: String },

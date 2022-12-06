@@ -3,6 +3,8 @@ import UserModel from "../model/user.model.js";
 import TaskModel from "../model/task.model.js";
 import bcrypt from "bcrypt";
 import generateToken from "../config/jwt.config.js";
+import isAuth from "../middlewares/isAuth.js";
+import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 
 //o roteador
 const userRoute = express.Router();
@@ -89,6 +91,20 @@ userRoute.post("/login", async (req, res) => {
       //se a comparação for FALSE, cai dentro desse else, ous seja, as senhas não são iguais
       return res.status(401).json({ msg: "Email ou senha inválida" });
     }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error.errors);
+  }
+});
+
+//ROTA PROFILE
+// middlewares:
+//isAuth -> se está autorizado
+userRoute.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
+  try {
+    //req.currentUser -> veio do middle attachCurrentUser
+
+    return res.status(200).json(req.currentUser);
   } catch (error) {
     console.log(error);
     return res.status(500).json(error.errors);

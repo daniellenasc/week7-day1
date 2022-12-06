@@ -1,3 +1,9 @@
+// middleware que:
+// 1. valida se o token que o usuário está enviando foi criado pela nossa aplicação (tem a mesma assinatura)
+// 2. extrai o payload (data), criando a chave "req.auth"
+// 3. cria a chave chamada: req.currentUser
+// 3. next()
+
 import { expressjwt } from "express-jwt";
 import * as dotenv from "dotenv";
 

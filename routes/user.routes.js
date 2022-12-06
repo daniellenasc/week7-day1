@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import generateToken from "../config/jwt.config.js";
 import isAuth from "../middlewares/isAuth.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
+import isAdmin from "../middlewares/isAdmin.js";
 
 //o roteador
 const userRoute = express.Router();
@@ -111,6 +112,26 @@ userRoute.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
   }
 });
 
+//ROTA ALL USERS
+//tem que estar autorizado (token válido)
+//só pode ser acessado pelo admin
+userRoute.get(
+  "/all-users",
+  isAuth,
+  isAdmin,
+  attachCurrentUser,
+  async (req, res) => {
+    try {
+      const users = await UserModel.find({}, { passwordHash: 0 });
+
+      return res.status(200).json(users);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error.errors);
+    }
+  }
+);
+
 //GET ALL
 //dois parâmetros: 1) caminho, rota; 2) callback - recebe dois argumentos: req (request => requisições do cliente) e res (response => a resposta para o cliente)
 /* userRoute.get("/enap", (req, res) => {
@@ -129,7 +150,7 @@ userRoute.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
 //A CALLBACK É ASSÍNCRONA!!
 //no insomnia: GET http://localhost:8080/user/all-users
 
-userRoute.get("/all-users", async (req, res) => {
+/* userRoute.get("/all-users", async (req, res) => {
   try {
     // find vazio -> todas as ocorrencias
     // projections -> define os campos que vão ser retornados
@@ -146,7 +167,7 @@ userRoute.get("/all-users", async (req, res) => {
     console.log(error);
     return res.status(500).json(error.errors);
   }
-});
+}); */
 
 //CREATE USER
 /* userRoute.post("/new-user", (req, res) => {

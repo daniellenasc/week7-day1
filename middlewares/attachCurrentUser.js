@@ -1,6 +1,9 @@
+// middleware que:
+// 1. consome as informações de req.auth (do isAuth)
+// 2. com o _id, acha o usuário dono do token
+// 3. next()
+
 import UserModel from "../model/user.model.js";
-//middleware
-//next entrega a req para o próximo
 async function attachCurrentUser(req, res, next) {
   try {
     const userData = req.auth; // -> _id, email, role

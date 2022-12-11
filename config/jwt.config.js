@@ -6,7 +6,7 @@ function generateToken(user) {
   //user -> é o usuário para quem vou criar esse token
   //user -> é o que vem do banco de dados
 
-  const { _id, email, role } = user;
+  const { _id, email, role } = user; //---> PAYLOAD!!!!! (informações guardadas no token)
 
   //signature -> a assinatura que prova que foi essa aplicação que criou o token
   const signature = process.env.TOKEN_SIGN_SECRET;

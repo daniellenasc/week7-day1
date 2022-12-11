@@ -101,9 +101,10 @@ userRoute.post("/login", async (req, res) => {
 //ROTA PROFILE
 // middlewares:
 //isAuth -> se está autorizado
+//attachCurrentUser -> já sabemos todas as informações do usuário
 userRoute.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
   try {
-    //req.currentUser -> veio do middle attachCurrentUser
+    //req.currentUser -> veio do middle attachCurrentUser e tem todas as informações do usuário
 
     return res.status(200).json(req.currentUser);
   } catch (error) {

@@ -18,11 +18,11 @@ import cors from "cors";
 //3. habilitar o servidor a ter variáveis de ambiente
 dotenv.config();
 
-//cors
-app.use(cors());
-
 //4. instanciar (invocar, fazer com que a função rode ao menos uma vez) a variável que vai ficar renponsável pelo nosso servidor - por padrão é app
 const app = express();
+
+//cors
+app.use(cors());
 
 //5. configurar o servidor para aceitar enviar e receber arquivos em JSON (se não fizer essa configuração, o servidor não vai entender JSON!!)
 //.use() é um middleware

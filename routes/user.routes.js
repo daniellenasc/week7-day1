@@ -20,6 +20,13 @@ userRoute.post("/sign-up", async (req, res) => {
     //capturando a senha do req.body
     const { password } = req.body;
 
+    //para criar ADMIN, pod exemplo:
+    /*  
+   if (password === "passwordDoAdmin") {
+      req.body.role = "ADMIN";
+    }    
+    */
+
     // checando se a senha existe || se tem 8 caracteres, maísculos e minúsculo e caracteres especiais
     if (
       !password ||

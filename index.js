@@ -12,8 +12,14 @@ import connect from "./config/db.config.js";
 import userRoute from "./routes/user.routes.js";
 import taskRoute from "./routes/task.route.js";
 
+//importar o cors
+import cors from "cors";
+
 //3. habilitar o servidor a ter variáveis de ambiente
 dotenv.config();
+
+//cors
+app.use(cors());
 
 //4. instanciar (invocar, fazer com que a função rode ao menos uma vez) a variável que vai ficar renponsável pelo nosso servidor - por padrão é app
 const app = express();

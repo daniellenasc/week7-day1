@@ -12,7 +12,7 @@ import connect from "./config/db.config.js";
 import userRoute from "./routes/user.routes.js";
 import taskRoute from "./routes/task.route.js";
 
-//importar o cors
+//importar o cors -> determina de quem seu servidor vai receber as requisições, caso contrário ficará aberto e serem feitas muitas requisições
 import cors from "cors";
 
 //3. habilitar o servidor a ter variáveis de ambiente

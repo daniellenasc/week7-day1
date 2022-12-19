@@ -45,6 +45,8 @@ const userSchema = new Schema(
 
     passwordHash: { type: String, require: true },
 
+    profilePic: { type: String },
+
     adress: {
       city: { type: String },
       state: { type: String },

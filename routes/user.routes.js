@@ -264,6 +264,29 @@ userRoute.delete("/delete/:id", async (req, res) => {
 });
 
 //PUT - EDITAR:
+
+userRoute.put("/edit", isAuth, attachCurrentUser, async (req, res) => {
+  try {
+    //quem é o usuário? -> req.currentUser
+
+    //findByIdAndUpdate recebe 3 parâmetros:
+    //o filtro -> id
+    //as modificações -> {...req.body}
+    //um objeto de configuração {new: true, runValidators: true}
+    //new: true → retorna o documento atualizado
+    //runValidators → roda as validações definidas no schema
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.currentUser._id,
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error.errors);
+  }
+});
+
 /* userRoute.put("/edit/:id", (req, res) => {
   const { id } = req.params;
 
@@ -281,7 +304,7 @@ userRoute.delete("/delete/:id", async (req, res) => {
 //ATUALIZAR USER NO MONGODB
 //A CALLBACK É ASSÍNCRONA!!
 //no insomnia: POST http://localhost:8080/user/edit/:id
-userRoute.put("/edit/:id", async (req, res) => {
+/* userRoute.put("/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
     //findByIdAndUpdate recebe 3 parâmetros:
@@ -300,6 +323,6 @@ userRoute.put("/edit/:id", async (req, res) => {
     console.error(error);
     return res.status(500).json(error.errors);
   }
-});
+}); */
 
 export default userRoute;

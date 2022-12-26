@@ -241,22 +241,19 @@ userRoute.get("/oneUser/:id", async (req, res) => {
 //A CALLBACK É ASSÍNCRONA!!
 //no insomnia: POST http://localhost:8080/user/delete/:id
 
-userRoute.delete("/delete/:id", async (req, res) => {
+userRoute.delete("/delete", isAuth, attachCurrentUser, async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedUser = await UserModel.findByIdAndDelete(id);
+    const deletedUser = await UserModel.findByIdAndDelete(req.currentUser._id);
 
     //caso o id não exista na coleção
     if (!deletedUser) {
       return res.status(400).json({ msg: "Usuário não encontrado" });
     }
 
-    const users = await UserModel.find();
-
     //deletar todas as tasks do usuário que foi deletado
-    await TaskModel.deleteMany({ user: id });
+    await TaskModel.deleteMany({ user: req.currentUser._id });
 
-    return res.status(200).json(users);
+    return res.status(200).json({ msg: "Usuário deletado!" });
   } catch (error) {
     console.error(error);
     return res.status(500).json(error.errors);

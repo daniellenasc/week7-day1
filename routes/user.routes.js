@@ -27,13 +27,8 @@ userRoute.post("/sign-up", async (req, res) => {
     }    
     */
 
-    // checando se a senha existe || se tem 8 caracteres, maísculos e minúsculo e caracteres especiais
-    if (
-      !password ||
-      password.match(
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#!])[0-9a-zA-Z$*&@#!]{8,}$/
-      )
-    ) {
+    // checando se a senha existe || se tem 8 caracteres, letras e números
+    if (!password || password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/)) {
       return res
         .status(400)
         .json({ msg: "Senha não tem os requisitos mínimos de segurança" });

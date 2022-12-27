@@ -12,6 +12,7 @@ import connect from "./config/db.config.js";
 import userRoute from "./routes/user.routes.js";
 import taskRoute from "./routes/task.routes.js";
 import uploadRoute from "./routes/uploadImage.routes.js";
+import logRoute from "./routes/log.routes.js";
 
 //importar o cors -> determina de quem seu servidor vai receber as requisições, caso contrário ficará aberto e serem feitas muitas requisições
 import cors from "cors";
@@ -39,6 +40,7 @@ connect();
 app.use("/user", userRoute);
 app.use("/task", taskRoute);
 app.use("/uploadImage", uploadRoute);
+app.use("/log", logRoute);
 
 //NO FINAL DO ARQUIVO
 //6. Servirdor subindo para o ar: .listen recebe dois parâmetros: 1. porta (que está definida no .env: process.env entra no arquivo .env, e PORT é a key do arquivo), 2. callback

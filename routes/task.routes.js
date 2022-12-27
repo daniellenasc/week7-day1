@@ -49,31 +49,6 @@ taskRoute.get("/my-tasks", isAuth, attachCurrentUser, async (req, res) => {
   }
 });
 
-//READ TASK
-taskRoute.get("/oneTask/:idTask", async (req, res) => {
-  try {
-    const { idTask } = req.params;
-
-    const oneTask = await TaskModel.findById(idTask).populate("user");
-
-    return res.status(200).json(oneTask);
-  } catch (error) {
-    console.log(error);
-    return res.status(400).json(error.errors);
-  }
-});
-
-//READ ALL TASKS
-taskRoute.get("/all-tasks", async (req, res) => {
-  try {
-    const allTasks = await TaskModel.find({}).populate("user");
-    return res.status(200).json(allTasks);
-  } catch (error) {
-    console.log(error);
-    return res.status(400).json(error.errors);
-  }
-});
-
 //EDIT TASK
 taskRoute.put("/edit/:idTask", isAuth, attachCurrentUser, async (req, res) => {
   try {
@@ -87,7 +62,7 @@ taskRoute.put("/edit/:idTask", isAuth, attachCurrentUser, async (req, res) => {
     await LogModel.create({
       user: req.currentUser._id,
       task: idTask,
-      status: `A tarefa "${updatedTask.details}" foi atualizada.`,
+      status: `A tarefa "${updatedTask.details}" foi atualizada`,
     });
 
     return res.status(200).json(updatedTask);
@@ -118,7 +93,7 @@ taskRoute.put(
       await LogModel.create({
         user: req.currentUser._id,
         task: idTask,
-        status: `A tarefa "${task.details}" foi concluída.`,
+        status: `A tarefa "${task.details}" foi concluída`,
       });
 
       return res.status(200).json(task);
@@ -153,9 +128,9 @@ taskRoute.delete(
       );
 
       await LogModel.create({
-        user: req.currentUser._id,
         task: idTask,
-        status: `A tarefa "${deletedTask.details}" foi excluída com o status ${deletedTask.status}.`,
+        user: req.currentUser._id,
+        status: `A tarefa "${deletedTask.details}" foi excluída com o status ${deletedTask.status}`,
       });
 
       return res.status(200).json(deletedTask);

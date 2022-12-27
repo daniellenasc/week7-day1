@@ -16,3 +16,5 @@ logRoute.get("/my-logs", isAuth, attachCurrentUser, async (req, res) => {
     return res.status(400).json(error);
   }
 });
+
+export default logRoute;

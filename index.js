@@ -10,7 +10,7 @@ import connect from "./config/db.config.js";
 
 //importar as rotas:
 import userRoute from "./routes/user.routes.js";
-import taskRoute from "./routes/task.route.js";
+import taskRoute from "./routes/task.routes.js";
 import uploadRoute from "./routes/uploadImage.routes.js";
 
 //importar o cors -> determina de quem seu servidor vai receber as requisições, caso contrário ficará aberto e serem feitas muitas requisições

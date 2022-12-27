@@ -1,7 +1,8 @@
-import express, { application } from "express";
+import express from "express";
 
 import TaskModel from "../model/task.model.js";
 import UserModel from "../model/user.model.js";
+import LogModel from "../model/log.model.js";
 
 import isAuth from "../middlewares/isAuth.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
@@ -23,6 +24,12 @@ taskRoute.post("/create-task", isAuth, attachCurrentUser, async (req, res) => {
       },
       { new: true, runValidators: true }
     );
+
+    await LogModel.create({
+      user: req.currentUser._id,
+      task: newTask._id,
+      status: "Uma nova tarefa foi criada",
+    });
 
     return res.status(201).json(newTask);
   } catch (error) {
@@ -76,6 +83,13 @@ taskRoute.put("/edit/:idTask", isAuth, attachCurrentUser, async (req, res) => {
       { ...req.body },
       { new: true, runValidators: true }
     );
+
+    await LogModel.create({
+      user: req.currentUser._id,
+      task: idTask,
+      status: `A tarefa "${updatedTask.details}" foi atualizada.`,
+    });
+
     return res.status(200).json(updatedTask);
   } catch (error) {
     console.log(error);
@@ -100,6 +114,13 @@ taskRoute.put(
         },
         { new: true, runValidators: true }
       );
+
+      await LogModel.create({
+        user: req.currentUser._id,
+        task: idTask,
+        status: `A tarefa "${task.details}" foi concluída.`,
+      });
+
       return res.status(200).json(task);
     } catch (error) {
       console.log(error);
@@ -130,6 +151,13 @@ taskRoute.delete(
         },
         { new: true, runValidators: true }
       );
+
+      await LogModel.create({
+        user: req.currentUser._id,
+        task: idTask,
+        status: `A tarefa "${deletedTask.details}" foi excluída com o status ${deletedTask.status}.`,
+      });
+
       return res.status(200).json(deletedTask);
     } catch (error) {
       console.log(error);

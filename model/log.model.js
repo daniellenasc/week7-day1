@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const logSchema = newSchema({
+const logSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   task: { type: Schema.Types.ObjectId, ref: "Task" },
   date: { type: Date, default: Date.now },

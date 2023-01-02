@@ -24,7 +24,7 @@ dotenv.config();
 const app = express();
 
 //cors
-app.use(cors());
+app.use(cors({ origin: process.env.REACT_URL }));
 
 //5. configurar o servidor para aceitar enviar e receber arquivos em JSON (se não fizer essa configuração, o servidor não vai entender JSON!!)
 //.use() é um middleware
